@@ -26,9 +26,15 @@ const products = productsFromServer.map(product => {
 
 export const App = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [search, setSearch] = useState('');
   const filteredProducts = selectedUserId
     ? products.filter(product => product.ownerId === selectedUserId)
     : products;
+
+  const filteredSearch = filteredProducts.filter(
+    product =>
+      product.name && product.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <div className="section">
@@ -69,21 +75,25 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={search}
+                  onChange={event => setSearch(event.target.value)}
                 />
 
                 <span className="icon is-left">
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {search && (
+                  <span className="icon is-right">
+                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setSearch('')}
+                    />
+                  </span>
+                )}
               </p>
             </div>
 
@@ -125,6 +135,10 @@ export const App = () => {
                 data-cy="ResetAllButton"
                 href="#/"
                 className="button is-link is-outlined is-fullwidth"
+                onClick={() => {
+                  setSelectedUserId(null);
+                  setSearch('');
+                }}
               >
                 Reset all filters
               </a>
@@ -133,12 +147,12 @@ export const App = () => {
         </div>
 
         <div className="box table-container">
-          {filteredProducts.length === 0 ? (
+          {filteredSearch.length === 0 ? (
             <p data-cy="NoMatchingMessage">
               No products matching selected criteria
             </p>
           ) : (
-            <ProductTable products={filteredProducts} />
+            <ProductTable products={filteredSearch} />
           )}
         </div>
       </div>
