@@ -133,11 +133,13 @@ export const App = () => {
         </div>
 
         <div className="box table-container">
-          <p data-cy="NoMatchingMessage">
-            No products matching selected criteria
-          </p>
-
-          <ProductTable products={filteredProducts} />
+          {filteredProducts.length === 0 ? (
+            <p data-cy="NoMatchingMessage">
+              No products matching selected criteria
+            </p>
+          ) : (
+            <ProductTable products={filteredProducts} />
+          )}
         </div>
       </div>
     </div>
